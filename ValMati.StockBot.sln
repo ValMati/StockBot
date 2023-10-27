@@ -12,8 +12,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.gitignore = .gitignore
 		BuildImage.ps1 = BuildImage.ps1
 		Dockerfile = Dockerfile
+		global.json = global.json
 		LICENSE = LICENSE
 		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{50AE21B3-BF7A-4C68-89D1-AFF666D04DD0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{65CBC1CB-F7BF-49FC-A7CE-C0E68E47AFBE}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\build.yml = .github\workflows\build.yml
 	EndProjectSection
 EndProject
 Global
@@ -29,6 +37,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{50AE21B3-BF7A-4C68-89D1-AFF666D04DD0} = {B5DC0AE1-4A38-47F7-8346-713CC53D3013}
+		{65CBC1CB-F7BF-49FC-A7CE-C0E68E47AFBE} = {50AE21B3-BF7A-4C68-89D1-AFF666D04DD0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B052D6C2-1347-4D3D-A5F2-0BC447A87032}
