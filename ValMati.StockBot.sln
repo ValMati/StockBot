@@ -7,8 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ValMati.StockBot", "src\Val
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B5DC0AE1-4A38-47F7-8346-713CC53D3013}"
 	ProjectSection(SolutionItems) = preProject
+		.dockerignore = .dockerignore
 		.editorconfig = .editorconfig
 		.gitignore = .gitignore
+		BuildImage.ps1 = BuildImage.ps1
+		Dockerfile = Dockerfile
 		LICENSE = LICENSE
 		README.md = README.md
 	EndProjectSection
