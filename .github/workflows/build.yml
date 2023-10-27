@@ -28,7 +28,7 @@ jobs:
       run: dotnet restore ./src/ValMati.StockBot/ValMati.StockBot.csproj --runtime linux-x64
 
     - name: Build
-      run: dotnet publish -c Release --no-restore --runtime linux-x64 /p:DebugType=None /p:Platform=x64
+      run: dotnet publish -c Release --no-restore --runtime linux-x64 /p:DebugType=None
 
     # - name: Test
     #   run: dotnet test --no-build --verbosity normal
