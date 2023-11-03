@@ -38,13 +38,14 @@ jobs:
     - name: Prepare docker image
       id: prep
       run: |
-        DOCKER_IMAGE=${GITHUB_REPOSITORY@L}
+        DOCKER_IMAGE=${{ secrets.ACR_ENDPOINT }}/${GITHUB_REPOSITORY#*/}/${GITHUB_REPOSITORY#*/}
+        DOCKER_IMAGE=${DOCKER_IMAGE@L}
         VERSION=latest
         SHORTREF=${GITHUB_SHA::8}
 
         # If this is git tag, use the tag name as a docker tag
         if [[ $GITHUB_REF == refs/tags/* ]]; then
-          VERSION=${GITHUB_REF#refs/tags/v}
+            VERSION=${GITHUB_REF#refs/tags/v}
         fi
         TAGS="${DOCKER_IMAGE}:${VERSION},${DOCKER_IMAGE}:${SHORTREF}"
 
@@ -52,7 +53,7 @@ jobs:
         # this is the most recent version of the image and also
         # tag it 'latest'.
         if [[ $VERSION =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
-          TAGS="$TAGS,${DOCKER_IMAGE}:latest"
+            TAGS="$TAGS,${DOCKER_IMAGE}:latest"
         fi
 
         # Set output parameters.
