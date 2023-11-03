@@ -6,6 +6,7 @@ using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
 IConfigurationRoot configuration = new ConfigurationBuilder()
+    .AddEnvironmentVariables()
     .AddUserSecrets(typeof(Program).Assembly)
     .Build();
 
@@ -50,7 +51,7 @@ async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, Cancel
         return;
     }
 
-    var chatId = message.Chat.Id;
+    long chatId = message.Chat.Id;
 
     Console.WriteLine($"Received a '{messageText}' message in chat {chatId}.");
 
@@ -63,7 +64,7 @@ async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, Cancel
 
 Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
 {
-    var ErrorMessage = exception switch
+    string? ErrorMessage = exception switch
     {
         ApiRequestException apiRequestException
             => $"Telegram API Error:\n[{apiRequestException.ErrorCode}]\n{apiRequestException.Message}",

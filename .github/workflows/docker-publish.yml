@@ -48,12 +48,9 @@ jobs:
         username: ${{ secrets.ACR_USERNAME }}
         password: ${{ secrets.ACR_PASSWORD }}      
       
-    - name: Build docker image
+    - name: Build and push docker image
       uses: docker/build-push-action@v4
       with:
         push: true
         platforms: linux/amd64
         tags: ${{ steps.prep.outputs.tags }}
-
-    - name: Image digest
-      run: echo ${{ steps.docker_build.outputs.digest }}
