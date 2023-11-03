@@ -36,7 +36,7 @@ jobs:
     - name: Prepare docker image
       id: prep
       run: |
-        DOCKER_IMAGE=${{ github.event.sender.name }}/${GITHUB_REPOSITORY#*/}
+        DOCKER_IMAGE=${GITHUB_REPOSITORY@L}
         VERSION=latest
         SHORTREF=${GITHUB_SHA::8}
 
@@ -64,7 +64,7 @@ jobs:
         username: ${{ secrets.ACR_USERNAME }}
         password: ${{ secrets.ACR_PASSWORD }}      
 
-    - name: Test build docker image
+    - name: Build docker image
       uses: docker/build-push-action@v4
       with:
         push: false
