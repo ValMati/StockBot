@@ -1,3 +1,7 @@
 **/.vs
 **/[b|B]in/
 **/[O|o]bj/
+
+# OpenTofu 
+infra/**/*
+infra
