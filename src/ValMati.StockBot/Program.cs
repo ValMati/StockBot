@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Serilog;
+using Serilog.Events;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Polling;
@@ -6,9 +8,17 @@ using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
 IConfigurationRoot configuration = new ConfigurationBuilder()
-    .AddEnvironmentVariables()
+#if DEBUG
     .AddUserSecrets(typeof(Program).Assembly)
+#else
+    .AddEnvironmentVariables()
+#endif
     .Build();
+
+Log.Logger = new LoggerConfiguration()
+                    .MinimumLevel.Information()
+                    .WriteTo.Console(restrictedToMinimumLevel: LogEventLevel.Information)
+                    .CreateLogger();
 
 string token = configuration["BotConfig:Token"]!;
 
@@ -31,11 +41,9 @@ botClient.StartReceiving(
 
 var me = await botClient.GetMeAsync();
 
-Console.WriteLine($"Start listening for @{me.Username}");
-Console.ReadLine();
+Log.Information("Start listening for @{username}", me.Username);
 
-// Send cancellation request to stop bot
-// cts.Cancel();
+await Task.Delay(Timeout.Infinite, cts.Token);
 
 async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
 {
@@ -53,7 +61,7 @@ async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, Cancel
 
     long chatId = message.Chat.Id;
 
-    Console.WriteLine($"Received a '{messageText}' message in chat {chatId}.");
+    Log.Information("Received a '{messageText}' message in chat {chatId}.", messageText, chatId);
 
     // Echo received message text
     Message sentMessage = await botClient.SendTextMessageAsync(
@@ -64,14 +72,14 @@ async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, Cancel
 
 Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
 {
-    string? ErrorMessage = exception switch
+    string? errorMessage = exception switch
     {
         ApiRequestException apiRequestException
             => $"Telegram API Error:\n[{apiRequestException.ErrorCode}]\n{apiRequestException.Message}",
         _ => exception.ToString()
     };
 
-    Console.WriteLine(ErrorMessage);
+    Log.Error(exception, errorMessage);
 
     return Task.CompletedTask;
 }
