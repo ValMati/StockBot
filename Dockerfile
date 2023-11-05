@@ -4,7 +4,7 @@ WORKDIR /src
 
 # copy csproj and restore as distinct layers
 COPY ./src/ValMati.StockBot/ValMati.StockBot.csproj ./src/ValMati.StockBot/
-RUN dotnet restore ./src/ValMati.StockBot/ValMati.StockBot.csproj --runtime linux-x64
+RUN dotnet restore ./src/ValMati.StockBot/ValMati.StockBot.csproj --runtime linux-x64 /property:Configuration=Release
 
 # copy everything else and build
 COPY . .

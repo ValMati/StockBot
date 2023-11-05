@@ -27,10 +27,10 @@ jobs:
         global-json-file: ./global.json
 
     - name: Restore dependencies
-      run: dotnet restore ./src/ValMati.StockBot/ValMati.StockBot.csproj --runtime linux-x64
+      run: dotnet restore ./src/ValMati.StockBot/ValMati.StockBot.csproj --runtime linux-x64 /property:Configuration=Release
 
     - name: Build
-      run: dotnet publish -c Release --no-restore --runtime linux-x64 --no-self-contained /p:DebugType=None
+      run: dotnet build -c Release --no-restore --no-self-contained /p:DebugType=None
 
     # - name: Test
     #   run: dotnet test --no-build --verbosity normal
