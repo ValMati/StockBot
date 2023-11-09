@@ -475,3 +475,13 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+# OpenTofu 
+secrets.tfvars
+.terraform
+.terraform*
+*.tfstate*
+*.tfplan
+
+# Secrets
+*secrets*
