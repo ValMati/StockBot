@@ -1,6 +1,6 @@
 resource "azurerm_resource_group" "rg" {
-  name      = "v-stockbot-rg-${var.environment}"
-  location  = var.resource_group_location
+  name     = "v-stockbot-rg-${var.environment}"
+  location = var.resource_group_location
 
   tags = {
     environment = "${var.environment}"
@@ -19,11 +19,11 @@ resource "azurerm_container_group" "container" {
     username = var.acr_username
     password = var.acr_password
     server   = var.acr_server
-  }  
+  }
 
   container {
     name   = "v-stockbot-aci-${var.environment}"
-    image  = "vcommonacr.azurecr.io/stockbot/stockbot:${var.image_version}"
+    image  = "${var.acr_server}/stockbot/stockbot:${var.image_version}"
     cpu    = var.cpu_cores
     memory = var.memory_in_gb
 

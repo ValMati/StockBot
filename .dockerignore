@@ -5,3 +5,6 @@
 # OpenTofu 
 infra/**/*
 infra
+
+# Secrets
+*secrets*
