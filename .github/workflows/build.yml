@@ -74,5 +74,5 @@ jobs:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       with:
         args: >
-          -Dsonar.organization=ValMati
+          -Dsonar.organization=valmati
           -Dsonar.projectKey=ValMati_StockBot
