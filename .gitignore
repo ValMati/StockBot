@@ -482,6 +482,5 @@ secrets.tfvars
 .terraform*
 *.tfstate*
 *.tfplan
-
-# Secrets
-*secrets*
+*.tfvars.*
+!*.tfvars.example

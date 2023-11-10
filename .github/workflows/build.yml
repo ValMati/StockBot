@@ -38,7 +38,7 @@ jobs:
     - name: Prepare docker image
       id: prep
       run: |
-        DOCKER_IMAGE=${{ secrets.ACR_ENDPOINT }}/${GITHUB_REPOSITORY#*/}/${GITHUB_REPOSITORY#*/}
+        DOCKER_IMAGE=${{ secrets.IMGREG_ENDPOINT }}/${GITHUB_REPOSITORY#*/}/${GITHUB_REPOSITORY#*/}
         DOCKER_IMAGE=${DOCKER_IMAGE@L}
         VERSION=latest
         SHORTREF=${GITHUB_SHA::8}
