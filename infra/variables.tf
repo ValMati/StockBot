@@ -28,29 +28,19 @@ variable "memory_in_gb" {
   default     = 2
 }
 
-variable "restart_policy" {
-  type        = string
-  description = "The behavior of Azure runtime if container has stopped."
-  default     = "OnFailure"
-  validation {
-    condition     = contains(["Always", "Never", "OnFailure"], var.restart_policy)
-    error_message = "The restart_policy must be one of the following: Always, Never, OnFailure."
-  }
-}
-
-variable "acr_username" {
+variable "imgreg_username" {
   type        = string
   description = "User name to access de ACR."
   sensitive   = true
 }
 
-variable "acr_password" {
+variable "imgreg_password" {
   type        = string
   description = "Password to access de ACR."
   sensitive   = true
 }
 
-variable "acr_server" {
+variable "imgreg_server" {
   type        = string
   description = "ACR URL."
   sensitive   = true

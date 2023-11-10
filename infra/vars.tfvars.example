@@ -1,0 +1,5 @@
+environment             = "<Suffix to identify the environment. (dev, pro, ...)>"
+resource_group_location = "<Region to deploy the resource group and the rest of resources>"
+image_version           = "<Version of the image to deploy>"
+cpu_cores               = "<The number of CPU cores to allocate>"
+memory_in_gb            = "<The amount of memory to allocate>"

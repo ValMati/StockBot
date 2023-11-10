@@ -19,7 +19,7 @@ jobs:
     - name: Prepare
       id: prep
       run: |
-        DOCKER_IMAGE=${{ secrets.ACR_ENDPOINT }}/${GITHUB_REPOSITORY#*/}/${GITHUB_REPOSITORY#*/}
+        DOCKER_IMAGE=${{ secrets.IMGREG_ENDPOINT }}/${GITHUB_REPOSITORY#*/}/${GITHUB_REPOSITORY#*/}
         DOCKER_IMAGE=${DOCKER_IMAGE@L}
         VERSION=latest
         SHORTREF=${GITHUB_SHA::8}
@@ -44,9 +44,9 @@ jobs:
     - name: Login to ACR
       uses: docker/login-action@v2
       with:
-        registry: ${{ secrets.ACR_ENDPOINT }}
-        username: ${{ secrets.ACR_USERNAME }}
-        password: ${{ secrets.ACR_PASSWORD }}      
+        registry: ${{ secrets.IMGREG_ENDPOINT }}
+        username: ${{ secrets.IMGREG_USERNAME }}
+        password: ${{ secrets.IMGREG_PASSWORD }}      
       
     - name: Build and push docker image
       uses: docker/build-push-action@v4

@@ -13,17 +13,17 @@ resource "azurerm_container_group" "container" {
   resource_group_name = azurerm_resource_group.rg.name
   ip_address_type     = "Public"
   os_type             = "Linux"
-  restart_policy      = var.restart_policy
+  restart_policy      = "OnFailure"
 
   image_registry_credential {
-    username = var.acr_username
-    password = var.acr_password
-    server   = var.acr_server
+    username = var.imgreg_username
+    password = var.imgreg_password
+    server   = var.imgreg_server
   }
 
   container {
     name   = "v-stockbot-aci-${var.environment}"
-    image  = "${var.acr_server}/stockbot/stockbot:${var.image_version}"
+    image  = "${var.imgreg_server}/stockbot/stockbot:${var.image_version}"
     cpu    = var.cpu_cores
     memory = var.memory_in_gb
 
