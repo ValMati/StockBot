@@ -16,4 +16,6 @@ WORKDIR /app
 
 COPY --from=build-env /publish .
 
+USER nonroot
+
 ENTRYPOINT ["dotnet", "ValMati.StockBot.dll"]
