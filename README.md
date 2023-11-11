@@ -1,6 +1,9 @@
 # StockBot
 
-[![Build](https://github.com/ValMati/StockBot/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/ValMati/StockBot/actions/workflows/build.yml)
+[![Build](https://github.com/ValMati/StockBot/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/ValMati/StockBot/actions/workflows/build.yml) 
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ValMati_StockBot&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=ValMati_StockBot)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ValMati_StockBot_OtherFiles&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=ValMati_StockBot_OtherFiles)
+
 
 A Telegram bot for accessing stock price data
 

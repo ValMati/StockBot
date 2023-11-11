@@ -64,7 +64,7 @@ async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, Cancel
     Log.Information("Received a '{messageText}' message in chat {chatId}.", messageText, chatId);
 
     // Echo received message text
-    Message sentMessage = await botClient.SendTextMessageAsync(
+    _ = await botClient.SendTextMessageAsync(
         chatId: chatId,
         text: "You said:\n" + messageText,
         cancellationToken: cancellationToken);
