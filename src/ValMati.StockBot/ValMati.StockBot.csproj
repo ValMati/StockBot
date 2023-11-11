@@ -7,6 +7,7 @@
     <Nullable>enable</Nullable>
     <UserSecretsId>f3c8967c-e445-402c-b02c-ac9e9ea6bc92</UserSecretsId>
     <NoWarn>SA0001</NoWarn>
+    <Version>0.0.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
