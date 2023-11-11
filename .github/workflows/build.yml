@@ -100,12 +100,12 @@ jobs:
         platforms: linux/amd64
         tags: ${{ steps.prep.outputs.tags }}
 
-    # - name: SonarCloud Scan
-    #   uses: sonarsource/sonarcloud-github-action@master
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-    #   with:
-    #     args: >
-    #       -Dsonar.organization=valmati
-    #       -Dsonar.projectKey=ValMati_StockBot
+    - name: SonarCloud Scan (for other files)
+      uses: sonarsource/sonarcloud-github-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      with:
+        args: >
+          -Dsonar.organization=valmati
+          -Dsonar.projectKey=ValMati_StockBot_OtherFiles
