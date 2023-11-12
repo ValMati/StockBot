@@ -15,6 +15,9 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    env:
+      -version: v0.0.0
+
     steps:
 
     - name: Set up JDK 17
@@ -61,7 +64,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       run: |
-        ./.sonar/scanner/dotnet-sonarscanner begin /k:"ValMati_StockBot" /o:"valmati" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
+        ./.sonar/scanner/dotnet-sonarscanner begin /k:"ValMati_StockBot" /o:"valmati" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.version="$version"
         dotnet build -c Release --no-restore --no-self-contained /p:DebugType=None
         ./.sonar/scanner/dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
 
@@ -109,3 +112,4 @@ jobs:
         args: >
           -Dsonar.organization=valmati
           -Dsonar.projectKey=ValMati_StockBot_OtherFiles
+          -Dsonar.projectVersion=$version
