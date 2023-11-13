@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      projectVersion: v0.0.0
+      projectVersion: v0.0.1
 
     steps:
 
