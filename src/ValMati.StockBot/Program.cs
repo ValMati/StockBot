@@ -1,13 +1,20 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Events;
-using ValMati.StockBot;
 using ValMati.StockBot.Services;
 using ValMati.StockBot.Services.Abstractions;
 
-IConfigurationRoot configuration = new ConfigurationBuilder()
+namespace ValMati.StockBot;
+
+[ExcludeFromCodeCoverage]
+internal static class Program
+{
+    private static async Task Main(string[] args)
+    {
+        IConfigurationRoot configuration = new ConfigurationBuilder()
 #if DEBUG
     .AddUserSecrets(typeof(Program).Assembly)
 #else
@@ -15,40 +22,42 @@ IConfigurationRoot configuration = new ConfigurationBuilder()
 #endif
     .Build();
 
-Log.Logger = new LoggerConfiguration()
-                    .MinimumLevel.Information()
-                    .WriteTo.Console(
-                        restrictedToMinimumLevel: LogEventLevel.Information,
-                        "[{Timestamp:yyyy-MM-dd HH:mm:ss.fff}] [{Level}] - {Message:lj}{NewLine}{Exception}")
-                    .CreateLogger();
+        Log.Logger = new LoggerConfiguration()
+                            .MinimumLevel.Information()
+                            .WriteTo.Console(
+                                restrictedToMinimumLevel: LogEventLevel.Information,
+                                "[{Timestamp:yyyy-MM-dd HH:mm:ss.fff}] [{Level}] - {Message:lj}{NewLine}{Exception}")
+                            .CreateLogger();
 
-try
-{
-    // Create service collection
-    IServiceCollection services = new ServiceCollection();
-
-    // Setup dependencies
-    services.AddLogging(
-        loggingBuilder =>
+        try
         {
-            loggingBuilder.ClearProviders();
-            loggingBuilder.AddSerilog(dispose: true, logger: Log.Logger);
-        });
+            // Create service collection
+            IServiceCollection services = new ServiceCollection();
 
-    services.AddScoped<IMessageHandler, MessageHandler>();
+            // Setup dependencies
+            services.AddLogging(
+                loggingBuilder =>
+                {
+                    loggingBuilder.ClearProviders();
+                    loggingBuilder.AddSerilog(dispose: true, logger: Log.Logger);
+                });
 
-    // Build service provider
-    IServiceProvider serviceProvider = services.BuildServiceProvider();
+            services.AddScoped<IMessageHandler, MessageHandler>();
 
-    // Run the console app
-    AppConsoleRunner appConsoleRunner = new(serviceProvider, configuration);
-    await appConsoleRunner.RunAsync();
-}
-catch (Exception ex)
-{
-    Log.Fatal(ex, "Application terminated unexpectedly");
-}
-finally
-{
-    Log.CloseAndFlush();
+            // Build service provider
+            IServiceProvider serviceProvider = services.BuildServiceProvider();
+
+            // Run the console app
+            AppConsoleRunner appConsoleRunner = new(serviceProvider, configuration);
+            await appConsoleRunner.RunAsync();
+        }
+        catch (Exception ex)
+        {
+            Log.Fatal(ex, "Application terminated unexpectedly");
+        }
+        finally
+        {
+            Log.CloseAndFlush();
+        }
+    }
 }
