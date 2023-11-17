@@ -50,7 +50,7 @@ jobs:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       run: |
         ./.sonar/scanner/dotnet-sonarscanner begin /k:"ValMati_StockBot" /o:"valmati" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /v:="${{ env.projectVersion }}" /d:sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml"
-        dotnet build -c Release --no-restore --no-self-contained /p:DebugType=None
+        dotnet build -c Release --no-restore --no-self-contained
         dotnet test -c Release --no-build --collect:"XPlat Code Coverage;Format=opencover"
         ./.sonar/scanner/dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
 
