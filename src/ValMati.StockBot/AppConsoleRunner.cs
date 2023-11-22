@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using Telegram.Bot;
 using Telegram.Bot.Polling;
@@ -12,21 +11,17 @@ namespace ValMati.StockBot;
 internal class AppConsoleRunner
 {
     private readonly IServiceProvider serviceProvider;
-    private readonly IConfiguration configuration;
 
-    public AppConsoleRunner(IServiceProvider serviceProvider, IConfiguration configuration)
+    public AppConsoleRunner(IServiceProvider serviceProvider)
     {
         this.serviceProvider = serviceProvider;
-        this.configuration = configuration;
     }
 
     public async Task RunAsync()
     {
         Log.Information("Starting...");
 
-        string token = configuration["BotConfig:Token"]!;
-
-        TelegramBotClient botClient = new(token);
+        ITelegramBotClient botClient = serviceProvider.GetRequiredService<ITelegramBotClient>();
 
         using CancellationTokenSource cts = new();
 
@@ -50,7 +45,7 @@ internal class AppConsoleRunner
         await Task.Delay(Timeout.Infinite, cts.Token);
     }
 
-    private async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
+    internal async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
     {
         using IServiceScope serviceScope = serviceProvider.CreateScope();
         IServiceProvider scopedProvider = serviceScope.ServiceProvider;
@@ -60,7 +55,7 @@ internal class AppConsoleRunner
         await messageHandler.HandleUpdateAsync(botClient, update, cancellationToken);
     }
 
-    private async Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
+    internal async Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
     {
         using IServiceScope serviceScope = serviceProvider.CreateScope();
         IServiceProvider scopedProvider = serviceScope.ServiceProvider;

@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Events;
+using Telegram.Bot;
 using ValMati.StockBot.Services;
 using ValMati.StockBot.Services.Abstractions;
 
@@ -16,9 +17,9 @@ internal static class Program
     {
         IConfigurationRoot configuration = new ConfigurationBuilder()
 #if DEBUG
-    .AddUserSecrets(typeof(Program).Assembly)
+            .AddUserSecrets(typeof(Program).Assembly)
 #else
-    .AddEnvironmentVariables()
+            .AddEnvironmentVariables()
 #endif
     .Build();
 
@@ -42,13 +43,19 @@ internal static class Program
                     loggingBuilder.AddSerilog(dispose: true, logger: Log.Logger);
                 });
 
+            services.AddSingleton<ITelegramBotClient>(_ =>
+            {
+                string token = configuration["BotConfig:Token"]!;
+                return new TelegramBotClient(token);
+            });
+
             services.AddScoped<IMessageHandler, MessageHandler>();
 
             // Build service provider
             IServiceProvider serviceProvider = services.BuildServiceProvider();
 
             // Run the console app
-            AppConsoleRunner appConsoleRunner = new(serviceProvider, configuration);
+            AppConsoleRunner appConsoleRunner = new(serviceProvider);
             await appConsoleRunner.RunAsync();
         }
         catch (Exception ex)
