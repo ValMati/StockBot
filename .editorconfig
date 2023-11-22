@@ -56,6 +56,7 @@ dotnet_diagnostic.SA1503.severity = error
 dotnet_diagnostic.SA1517.severity = error
 dotnet_diagnostic.SA1515.severity = error
 dotnet_diagnostic.SA1513.severity = error
+dotnet_diagnostic.SA1507.severity = error
 
 [*.{cs,vb}]
 #### Naming styles ####

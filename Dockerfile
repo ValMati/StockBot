@@ -3,7 +3,7 @@ FROM mcr.microsoft.com/dotnet/sdk:7.0.403 AS build-env
 WORKDIR /src
 
 # copy csproj and restore as distinct layers
-COPY ./src/ValMati.StockBot/ValMati.StockBot.csproj ./src/ValMati.StockBot/
+COPY ./src/ValMati.StockBot/ValMati.StockBot.csproj Directory.Build.props ./src/ValMati.StockBot/
 RUN dotnet restore ./src/ValMati.StockBot/ValMati.StockBot.csproj --runtime linux-x64 /property:Configuration=Release
 
 # copy everything else and build

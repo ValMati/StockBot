@@ -1,85 +1,70 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Events;
 using Telegram.Bot;
-using Telegram.Bot.Exceptions;
-using Telegram.Bot.Polling;
-using Telegram.Bot.Types;
-using Telegram.Bot.Types.Enums;
+using ValMati.StockBot.Services;
+using ValMati.StockBot.Services.Abstractions;
 
-IConfigurationRoot configuration = new ConfigurationBuilder()
+namespace ValMati.StockBot;
+
+[ExcludeFromCodeCoverage]
+internal static class Program
+{
+    private static async Task Main(string[] args)
+    {
+        IConfigurationRoot configuration = new ConfigurationBuilder()
 #if DEBUG
-    .AddUserSecrets(typeof(Program).Assembly)
+            .AddUserSecrets(typeof(Program).Assembly)
 #else
-    .AddEnvironmentVariables()
+            .AddEnvironmentVariables()
 #endif
     .Build();
 
-Log.Logger = new LoggerConfiguration()
-                    .MinimumLevel.Information()
-                    .WriteTo.Console(restrictedToMinimumLevel: LogEventLevel.Information)
-                    .CreateLogger();
+        Log.Logger = new LoggerConfiguration()
+                            .MinimumLevel.Information()
+                            .WriteTo.Console(
+                                restrictedToMinimumLevel: LogEventLevel.Information,
+                                "[{Timestamp:yyyy-MM-dd HH:mm:ss.fff}] [{Level}] - {Message:lj}{NewLine}{Exception}")
+                            .CreateLogger();
 
-string token = configuration["BotConfig:Token"]!;
+        try
+        {
+            // Create service collection
+            IServiceCollection services = new ServiceCollection();
 
-TelegramBotClient botClient = new(token);
+            // Setup dependencies
+            services.AddLogging(
+                loggingBuilder =>
+                {
+                    loggingBuilder.ClearProviders();
+                    loggingBuilder.AddSerilog(dispose: true, logger: Log.Logger);
+                });
 
-using CancellationTokenSource cts = new();
+            services.AddSingleton<ITelegramBotClient>(_ =>
+            {
+                string token = configuration["BotConfig:Token"]!;
+                return new TelegramBotClient(token);
+            });
 
-// StartReceiving does not block the caller thread. Receiving is done on the ThreadPool.
-ReceiverOptions receiverOptions = new()
-{
-    AllowedUpdates = Array.Empty<UpdateType>() // receive all update types except ChatMember related updates
-};
+            services.AddScoped<IMessageHandler, MessageHandler>();
 
-botClient.StartReceiving(
-    updateHandler: HandleUpdateAsync,
-    pollingErrorHandler: HandlePollingErrorAsync,
-    receiverOptions: receiverOptions,
-    cancellationToken: cts.Token
-);
+            // Build service provider
+            IServiceProvider serviceProvider = services.BuildServiceProvider();
 
-var me = await botClient.GetMeAsync();
-
-Log.Information("Start listening for @{username}", me.Username);
-
-await Task.Delay(Timeout.Infinite, cts.Token);
-
-async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
-{
-    // Only process Message updates: https://core.telegram.org/bots/api#message
-    if (update.Message is not { } message)
-    {
-        return;
+            // Run the console app
+            AppConsoleRunner appConsoleRunner = new(serviceProvider);
+            await appConsoleRunner.RunAsync();
+        }
+        catch (Exception ex)
+        {
+            Log.Fatal(ex, "Application terminated unexpectedly");
+        }
+        finally
+        {
+            Log.CloseAndFlush();
+        }
     }
-
-    // Only process text messages
-    if (message.Text is not { } messageText)
-    {
-        return;
-    }
-
-    long chatId = message.Chat.Id;
-
-    Log.Information("Received a '{messageText}' message in chat {chatId}.", messageText, chatId);
-
-    // Echo received message text
-    _ = await botClient.SendTextMessageAsync(
-        chatId: chatId,
-        text: "You said:\n" + messageText,
-        cancellationToken: cancellationToken);
-}
-
-Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
-{
-    string? errorMessage = exception switch
-    {
-        ApiRequestException apiRequestException
-            => $"Telegram API Error:\n[{apiRequestException.ErrorCode}]\n{apiRequestException.Message}",
-        _ => exception.ToString()
-    };
-
-    Log.Error(exception, errorMessage);
-
-    return Task.CompletedTask;
 }
