@@ -11,6 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 		.gitignore = .gitignore
 		BuildImage.ps1 = BuildImage.ps1
+		Directory.Build.props = Directory.Build.props
 		Dockerfile = Dockerfile
 		global.json = global.json
 		LICENSE = LICENSE
@@ -27,7 +28,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{6C323F3C-225B-495E-88FC-5BFB7BB28F89}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ValMati.StockBot.Test", "tests\ValMati.StockBot.Test\ValMati.StockBot.Test.csproj", "{D2F6F456-81A8-47D3-BCA6-AB57B37EC1CA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ValMati.StockBot.Test", "tests\ValMati.StockBot.Test\ValMati.StockBot.Test.csproj", "{D2F6F456-81A8-47D3-BCA6-AB57B37EC1CA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
