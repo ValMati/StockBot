@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using Telegram.Bot;
 using Telegram.Bot.Polling;
@@ -17,6 +18,8 @@ internal class AppConsoleRunner
         this.serviceProvider = serviceProvider;
     }
 
+
+    [ExcludeFromCodeCoverage]
     public async Task RunAsync()
     {
         Log.Information("Starting...");
