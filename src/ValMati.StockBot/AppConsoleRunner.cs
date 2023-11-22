@@ -18,7 +18,6 @@ internal class AppConsoleRunner
         this.serviceProvider = serviceProvider;
     }
 
-
     [ExcludeFromCodeCoverage]
     public async Task RunAsync()
     {
