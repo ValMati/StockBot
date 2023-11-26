@@ -16,13 +16,6 @@ WORKDIR /app
 
 COPY --from=build-env /publish .
 
-RUN addgroup --group app --gid 2000 \
-&& adduser \    
-    --uid 1000 \
-    --gid 2000 \
-    "app" \
-&& chown app:app /app
-
-USER app:app
+USER app
 
 ENTRYPOINT ["dotnet", "ValMati.StockBot.dll"]
