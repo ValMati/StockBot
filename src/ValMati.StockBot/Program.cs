@@ -5,6 +5,8 @@ using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Events;
 using Telegram.Bot;
+using ValMati.StockBot.Providers;
+using ValMati.StockBot.Providers.Abstractions;
 using ValMati.StockBot.Services;
 using ValMati.StockBot.Services.Abstractions;
 
@@ -50,6 +52,8 @@ internal static class Program
             });
 
             services.AddScoped<IMessageHandler, MessageHandler>();
+
+            services.AddScoped<IProvider, MockProvider>();
 
             // Build service provider
             IServiceProvider serviceProvider = services.BuildServiceProvider();
