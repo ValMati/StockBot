@@ -4,6 +4,8 @@ using Telegram.Bot;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Requests;
 using Telegram.Bot.Types;
+using ValMati.StockBot.Providers.Abstractions;
+using ValMati.StockBot.Providers.Model;
 using ValMati.StockBot.Services;
 
 namespace ValMati.StockBot.Tests.Services;
@@ -19,7 +21,8 @@ public class MessageHandlerTest
         Update update = new Update { Message = null };
 
         ILogger<MessageHandler> logger = Substitute.For<ILogger<MessageHandler>>();
-        MessageHandler sut = new MessageHandler(logger);
+        IProvider provider = Substitute.For<IProvider>();
+        MessageHandler sut = new MessageHandler(logger, provider);
 
         // Act
         await sut.HandleUpdateAsync(botClient, update, CancellationToken.None);
@@ -28,6 +31,10 @@ public class MessageHandlerTest
         await botClient
                 .DidNotReceiveWithAnyArgs()
                 .SendTextMessageAsync(chatId: default!, text: default!, cancellationToken: default);
+
+        await provider
+                .DidNotReceiveWithAnyArgs()
+                .GetDataAsync(symbol: default!);
     }
 
     [Fact]
@@ -39,7 +46,8 @@ public class MessageHandlerTest
         Update update = new Update { Message = new Message { Text = null } };
 
         ILogger<MessageHandler> logger = Substitute.For<ILogger<MessageHandler>>();
-        MessageHandler sut = new MessageHandler(logger);
+        IProvider provider = Substitute.For<IProvider>();
+        MessageHandler sut = new MessageHandler(logger, provider);
 
         // Act
         await sut.HandleUpdateAsync(botClient, update, CancellationToken.None);
@@ -48,6 +56,10 @@ public class MessageHandlerTest
         await botClient
                 .DidNotReceiveWithAnyArgs()
                 .SendTextMessageAsync(chatId: default!, text: default!, cancellationToken: default);
+
+        await provider
+                .DidNotReceiveWithAnyArgs()
+                .GetDataAsync(symbol: default!);
     }
 
     [Fact]
@@ -74,7 +86,11 @@ public class MessageHandlerTest
         };
 
         ILogger<MessageHandler> logger = Substitute.For<ILogger<MessageHandler>>();
-        MessageHandler sut = new MessageHandler(logger);
+
+        IProvider provider = Substitute.For<IProvider>();
+        provider.GetDataAsync(textMessage).Returns(new Data());
+
+        MessageHandler sut = new MessageHandler(logger, provider);
 
         // Act
         await sut.HandleUpdateAsync(botClient, update, CancellationToken.None);
@@ -85,10 +101,14 @@ public class MessageHandlerTest
                 .MakeRequestAsync(
                     Arg.Is<SendMessageRequest>(r => r.ChatId == chatId && r.Text.Contains(textMessage)),
                     cancellationToken);
+
+        await provider
+                .Received(1)
+                .GetDataAsync(textMessage);
     }
 
     [Fact]
-    public void HandlePollingErrorAsync_LogError()
+    public async Task HandlePollingErrorAsync_LogError()
     {
         // Arrange
         ITelegramBotClient botClient = Substitute.For<ITelegramBotClient>();
@@ -97,10 +117,11 @@ public class MessageHandlerTest
         ApiRequestException exception = new ApiRequestException(exceptionMessage);
 
         ILogger<MessageHandler> logger = Substitute.For<ILogger<MessageHandler>>();
-        MessageHandler sut = new MessageHandler(logger);
+        IProvider provider = Substitute.For<IProvider>();
+        MessageHandler sut = new MessageHandler(logger, provider);
 
         // Act
-        sut.HandlePollingErrorAsync(botClient, exception, CancellationToken.None);
+        await sut.HandlePollingErrorAsync(botClient, exception, CancellationToken.None);
 
         // Assert
         logger
@@ -111,5 +132,9 @@ public class MessageHandlerTest
                 Arg.Any<object>(),
                 exception,
                 Arg.Any<Func<object, Exception?, string>>());
+
+        await provider
+                .DidNotReceiveWithAnyArgs()
+                .GetDataAsync(symbol: default!);
     }
 }
